@@ -15,22 +15,16 @@ char* getOperatorIndex(char* equationString);
 bool isOperator(int characterDec);
 void printArray(char* resultBeg, char* pointerToLast);
 char* normalizeAddition(char* resultBeg, char* pointerToLast);
-void reverseArr(char* arrBeg, char* arrEnd);
-void restoreForm(char* pointer, char* end);
-void rewrite(char* aBeg, char* aEnd, char* bBeg, char* bEnd);
-char* numberToArray(int number, char* arr);
 bool additionOK();
 bool subtractionOK();
 
 int main(){
 	char equationArray[MAX_ARRAY_SIZE*2+1];  // operandA(<=256) operator(1) operandB(<=256)
 	char result[MAX_ARRAY_SIZE];
-	char* pointerToLast=result; //always point to LAST element of the result array
+	char* pointerToLast=result; //points to LAST element in result; currently no elms, so pointer=&res[0]
 	char* operatorPtr;
-	char* endPtr;
+	char* endPtr;  // point to '\0' of equationArray
 
-	// if(!additionOK())return -1;
-	// if(!subtractionOK())return -1;
 	cin>>equationArray;
 	operatorPtr=getOperatorIndex(equationArray);
 	endPtr=(operatorPtr+1)+strlen(operatorPtr+1);  
@@ -54,23 +48,31 @@ switch(*operatorPtr){
 char* add(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLast){
 	int aLength=aEnd-aBeg;
 	int bLength=bEnd-bBeg;
+	char* firstPtr=pointerToLast;
+	
 	if(aLength<bLength){
 		pointerToLast=add(bBeg,bEnd,aBeg,aEnd, pointerToLast); 
 		return pointerToLast;
 	}
 		
-	do{
+	while(bEnd>=bBeg){
 		*pointerToLast=*aEnd+*bEnd-96;
 		--aEnd;
 		--bEnd;
 		++pointerToLast;
-	}while(bEnd>=bBeg);
+	}
 	while(aEnd>=aBeg){
 		*pointerToLast=*aEnd-48;
 		--aEnd;
 		++pointerToLast;
 	}
-	return --pointerToLast;
+	--pointerToLast;
+	while(!*pointerToLast){
+		if(pointerToLast==firstPtr)
+		break; //remove zeros
+		--pointerToLast;
+	}
+	return pointerToLast;
 }
 
 char* getOperatorIndex(char *equationString){
@@ -135,8 +137,9 @@ char* subtract(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLa
 	int bLength=bEnd-bBeg;
 	char* firstPtr=pointerToLast;
 	/*
-	* Assure that A is bigger than B, 
-	* if numbers equal make A the number with bigger [0] value
+	* Result is negated if A<B, or
+	* A[0]<B[0] when A.Len==B.Len
+	* In both of these cases A and B are also switched
 	*/
 	if(aLength<bLength){
 		pointerToLast=subtract(bBeg,bEnd,aBeg,aEnd, pointerToLast);
@@ -148,30 +151,25 @@ char* subtract(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLa
 			*pointerToLast*=-1;
 			return pointerToLast;
 	}
-	int aPrev=*aEnd;
 
-	do{
-		int a=aPrev;
-		--aEnd;		
-		aPrev=*aEnd;
+	while(bEnd>=bBeg){
+		int a=*aEnd;
+		--aEnd;	
 		if(a<*bEnd){
 			a+=10;
-			--aPrev;
+			--(*aEnd);
 		}
 		*pointerToLast=a-*bEnd;
 		++pointerToLast;
 		--bEnd;
-	}while(bEnd>=bBeg); 
-	aPrev-=48;
-	// --aEnd;
+	}
 	while(aEnd>=aBeg){
-		if(aPrev<0){
-			aPrev+=10;
+		if(*aEnd<0){
+			*aEnd+=10;
 			--*(aEnd-1);
 		}
-		*pointerToLast=aPrev;
+		*pointerToLast=*aEnd-48;
 		--aEnd;
-		aPrev=*aEnd-48;
 		++pointerToLast;
 	}		
 	//pointerToLast will otherwise point one past last element
@@ -193,50 +191,12 @@ char* divide(char* aBeg, char* aEnd,char* bBeg, char* bEnd, char* pointerToLast)
 }
 
 char* bigDivision(char* aBeg, char* aEnd,char* bBeg, char* bEnd, char* pointerToLast){
-		 
-		
-
+		subtract(aBeg,aEnd,bBeg,bEnd, pointerToLast);	
 	return nullptr;
 
 }
 
-
-void reverseArr(char *arrBeg, char *arrEnd){
-	int length=(arrEnd-arrBeg+1)/2;
-	do{
-		char tmp=*arrBeg;
-		*arrBeg=*arrEnd;
-		*arrEnd=tmp;
-		++arrBeg;
-		--arrEnd;
-		--length;
-	}while(length);
-}
-
-void restoreForm(char* pointer, char* end){
-	do{
-		*pointer+=48;
-		++pointer;
-	}while(pointer<=end);
-}
-
-void rewrite(char* aBeg, char* aEnd, char* bBeg, char* bEnd){
-	do{
-		*bEnd=*aEnd;
-		--bEnd;
-		--aEnd;
-	}while(aEnd>=aBeg);
-}
-
-char* numberToArray(int number, char* arr){
-	do{
-	*arr=number%10;
-	number/=10;
-	++arr;
-	}while(number>0);
-	return --arr;
-}
-
+ 
 bool additionOK(){
 	cout<<"PASSING ADDITION TEST...";
 	
