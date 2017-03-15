@@ -25,6 +25,8 @@ int main(){
 	char* operatorPtr;
 	char* endPtr;  // point to '\0' of equationArray
 
+	// additionOK();
+	// subtractionOK();
 	cin>>equationArray;
 	operatorPtr=getOperatorIndex(equationArray);
 	endPtr=(operatorPtr+1)+strlen(operatorPtr+1);  
@@ -201,7 +203,7 @@ bool additionOK(){
 	cout<<"PASSING ADDITION TEST...";
 	
 	char res[MAX_ARRAY_SIZE];
-	char* eq[][2]={
+	char eq[][2][50]={
 		{"1234+9876","11110"},
 		{"9876+1234", "11110"},
 		{"12345+9876","22221"},
@@ -238,7 +240,7 @@ bool subtractionOK(){
 	cout<<"PASSING SUBTRATCION TEST...";
 	
 	char res[MAX_ARRAY_SIZE];
-	char* eq[][2]={
+	char eq[][2][50]={
 		{"1234-9876","-8642"},
 		{"9876-1234", "8642"},
 		{"12345-9876","2469"},
@@ -246,12 +248,12 @@ bool subtractionOK(){
 		{"10000-10000","0"},
 		{"10000-9990","10"}
 	};
-	for(int i=0;i<4;++i){
+	for(int i=0;i<6;++i){
 		char* operatorPtr=getOperatorIndex(eq[i][0]);
 		char* pointerToLast=res;
 		char* endPtr=(operatorPtr+1)+strlen(operatorPtr+1);  
+		
 		pointerToLast=subtract(eq[i][0], operatorPtr-1, operatorPtr+1, endPtr-1, pointerToLast); 
-		pointerToLast=normalizeAddition(res, pointerToLast); //outdated?
 		int index=0;
 		while(pointerToLast>res){
 		if(eq[i][1][index]=='-'){
