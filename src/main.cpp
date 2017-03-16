@@ -7,14 +7,16 @@ const int MAX_ARRAY_SIZE=256;
 const unsigned MAX_INT_SIZE=-1;  
 char MAX_INT_STRING[]="4294967295"; //Should be const??
 
-char* add(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLast);
-char* subtract(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLast);
+char* add(const char* aBeg, const char *aEnd, const char* bBeg,const char* bEnd, char* pointerToLast);
+char* subtract(const char* aBeg, const char *aEnd, const char* bBeg, const char* bEnd, char* pointerToLast);
 char* divide(char* aBeg, char* aEnd, char* bBeg, char* bEnd, char* pointerToLast);
-char* bigDivision(char* aBeg, char* aEnd, char* bBeg, char* bEnd, char* pointerToLast);
+char* bigDivision(const char* aBeg, const char* aEnd, const char* bBeg, const char* bEnd, char* pointerToLast);
 char* getOperatorIndex(char* equationString);
 bool isOperator(int characterDec);
-void printArray(char* resultBeg, char* pointerToLast);
+void printArray(const char* resultBeg,const char* pointerToLast);
 char* normalizeAddition(char* resultBeg, char* pointerToLast);
+char* copyArray(char * from, char* fromEnd, char* to);
+char* reverseArray(char* arrBeg, char* arrEnd);
 bool additionOK();
 bool subtractionOK();
 
@@ -40,14 +42,14 @@ switch(*operatorPtr){
 		pointerToLast=subtract(equationArray,operatorPtr-1,operatorPtr+1,endPtr-1, pointerToLast);
 		break;
 	case 47:
-		pointerToLast=divide(equationArray,operatorPtr-1,operatorPtr+1,endPtr-1, pointerToLast);
+		pointerToLast=bigDivision(equationArray,operatorPtr-1,operatorPtr+1,endPtr-1, pointerToLast);
 		break;
 }
 	printArray(result, pointerToLast);
 	system("pause");
 };
 
-char* add(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLast){
+char* add(const char* aBeg, const char *aEnd, const char* bBeg,const char* bEnd, char* pointerToLast){
 	int aLength=aEnd-aBeg;
 	int bLength=bEnd-bBeg;
 	char* firstPtr=pointerToLast;
@@ -83,26 +85,26 @@ char* getOperatorIndex(char *equationString){
 }
  
 bool isOperator(int characterDec){
-	if(characterDec>47)return false;
+	if(characterDec>'/')return false;
 	
 	switch(characterDec){
-		case 42:       
+		case '*':       
 			// '*' assumed multiplication
 			return true;
-		case 43:
+		case '+':
 			// '+' assumed addition
 			return true;
-		case 45:
+		case '-':
 			// '-' assumed subtraction
 			return true;
-		case 47:
+		case '/':
 			// '/' assumed division
 			return true;
 	}
 	return false;
 }
 
-void printArray(char* resultBeg, char* pointerToLast){
+void printArray(const char* resultBeg,const char* pointerToLast){
 	//stats one past the last elem, so --pointerToLast accounts for that
 	while(pointerToLast>=resultBeg){
 		cout<<(int)*pointerToLast<<" ";
@@ -130,7 +132,7 @@ char* normalizeAddition(char* resultBeg, char* pointerToLast){
 }
  
 
-char* subtract(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLast){
+char* subtract(const char* aBeg, const char *aEnd, const char* bBeg, const char* bEnd, char* pointerToLast){
 	// aBeg is beginning of the string, 
 	// aEnd is pointerToOperator-1,
 	//	bBeg=pointerToOperator+1,
@@ -153,24 +155,25 @@ char* subtract(char* aBeg, char *aEnd, char* bBeg, char* bEnd, char* pointerToLa
 			*pointerToLast*=-1;
 			return pointerToLast;
 	}
-
+	*pointerToLast=0;
 	while(bEnd>=bBeg){
 		int a=*aEnd;
 		--aEnd;	
 		if(a<*bEnd){
 			a+=10;
-			--(*aEnd);
-		}
-		*pointerToLast=a-*bEnd;
+			*(pointerToLast+1)=-1;
+		}else *(pointerToLast+1)=0;
+		*pointerToLast+=a-*bEnd;
 		++pointerToLast;
 		--bEnd;
 	}
 	while(aEnd>=aBeg){
-		if(*aEnd<0){
-			*aEnd+=10;
-			--*(aEnd-1);
-		}
-		*pointerToLast=*aEnd-48;
+		int a=*aEnd;
+		if(a<0){
+			a+=10;
+			*(pointerToLast+1)=-1;
+		}else *(pointerToLast+1)=0;
+		*pointerToLast+=a-48;
 		--aEnd;
 		++pointerToLast;
 	}		
@@ -240,7 +243,7 @@ bool subtractionOK(){
 	cout<<"PASSING SUBTRATCION TEST...";
 	
 	char res[MAX_ARRAY_SIZE];
-	char eq[][2][50]={
+	 char eq[][2][50]={
 		{"1234-9876","-8642"},
 		{"9876-1234", "8642"},
 		{"12345-9876","2469"},
