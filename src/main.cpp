@@ -195,9 +195,46 @@ char* divide(char* aBeg, char* aEnd,char* bBeg, char* bEnd, char* pointerToLast)
 	
 }
 
-char* bigDivision(char* aBeg, char* aEnd,char* bBeg, char* bEnd, char* pointerToLast){
-		subtract(aBeg,aEnd,bBeg,bEnd, pointerToLast);	
-	return nullptr;
+char* reverseArray(char* arrBeg, char* arrEnd){
+	int length=arrEnd-arrBeg+1;
+	for(int a=0; a<length/2;a++){
+		cout<<"reverse: "<<(int)arrBeg[a]<<" "<<(int)arrBeg[length-a-1]<<endl;
+		char tmp=arrBeg[a]+48;
+		arrBeg[a]=arrBeg[length-a-1]+48;
+		arrBeg[length-a-1]=tmp;
+	}
+	if(length<2)*arrBeg+=48;
+	return arrEnd;
+}
+
+char* copyArray(char * from, char* fromEnd, char* to){
+	while(fromEnd-from>=0){
+		cout<<"copy: "<<(int)*from<<endl;
+		*to=*from;
+		++to;
+		++from;
+	}
+	*to='\0';
+	return --to;
+}
+
+char* bigDivision(const char* aBeg, const char* aEnd, const char* bBeg, const char* bEnd, char* pointerToLast){
+	int aLength=aEnd-aBeg;
+	int bLength=bEnd-bBeg;
+	if(aLength<bLength)bigDivision(bBeg, bEnd,aBeg,aEnd, pointerToLast);
+	char* res=pointerToLast;
+	char result[MAX_ARRAY_SIZE];
+	do{
+			pointerToLast=subtract(aBeg, aEnd, bBeg, bEnd, pointerToLast);
+			aEnd=reverseArray(result,copyArray(res, pointerToLast, result));
+			aBeg=result;
+			pointerToLast=res;
+			printArray(aBeg, aEnd);
+			cout<<"-----------"<<endl;
+	}while(*aBeg>'0');
+	pointerToLast=add(aBeg, aEnd, bBeg, bEnd, pointerToLast);
+	 
+	return pointerToLast;
 
 }
 
