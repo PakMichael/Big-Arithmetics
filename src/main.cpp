@@ -169,11 +169,14 @@ int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	}
 	while(lastInA>=firstInA){
 		int a=*lastInA;
-		if(a<0){
-			a+=10;
-			*(lastInResult+1)=-1;
-		}else 
-			*(lastInResult+1)=0;
+		// cout<<"here: "<<a<<endl;
+		// cout<<"last: "<<*lastInResult<<endl;
+		if(lastInA!=firstInA)
+			if(*lastInResult<0){
+				*lastInResult+=10;
+				*(lastInResult+1)=-1;
+			}else 
+				*(lastInResult+1)=0;
 		*lastInResult+=a;
 		--lastInA;
 		++lastInResult;
@@ -209,7 +212,7 @@ int* reverseArray(int* arrBeg, int* arrEnd){
 
 int* copyArray(int* firstInA, int* lastInA, int* lastInB){
 	while(lastInA-firstInA>=0){
-		cout<<"copy: "<<(int)*firstInA<<endl;
+		// cout<<"copy: "<<(int)*firstInA<<endl;
 		*lastInB=*firstInA;
 		++lastInB;
 		++firstInA;
@@ -219,22 +222,22 @@ int* copyArray(int* firstInA, int* lastInA, int* lastInB){
 }
 
 bool lessThan(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB){
-	cout<<"lse"<<endl;
-	printArray(firstInA, lastInA);
-	printArray(firstInB, lastInB);
-	cout<<"<-lse"<<endl;
+	// cout<<"lse"<<endl;
+	// printArray(firstInA, lastInA);
+	// printArray(firstInB, lastInB);
+	// cout<<"<-lse"<<endl;
 	if(lastInA-firstInA>lastInB-firstInB)return false;
 	if(lastInA-firstInA<lastInB-firstInB)return true;
-	while(lastInA!=firstInA){
+	while(lastInA>=firstInA){
 		int a=*firstInA;
 		int b=*firstInB;
-		cout<<"a="<<a<<"  b="<<b<<endl;
+		// cout<<"a="<<a<<"  b="<<b<<endl;
 		if(a>9)a-='0';
 		if(b>9)b-='0';
 		if(a>b)return false;
 		if(a<b)return true;
-		++lastInA;
-		++lastInB;
+		--lastInA;
+		--lastInB;
 	}
 	
 	return false;
@@ -246,17 +249,21 @@ int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, c
 	int* firstInResult=lastInResult;
 	
 	int tempResult[MAX_ARRAY_SIZE];
-	do{
-			cout<<"-----------"<<endl;
+	int* tmp;
+	int a=0;
+	while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
+			// cout<<"-----------"<<endl;
 			lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
+			tmp=lastInResult;
 			lastInResult=copyArray(firstInResult, lastInResult, tempResult);
 			lastInA=reverseArray(tempResult, lastInResult);
 			firstInA=tempResult;
 			lastInResult=firstInResult;
-			// printArray(firstInA, lastInA);
-	}while(!lessThan(firstInA, lastInA, firstInB, lastInB));
-	
-	return lastInResult;
+			// cout<<"print: ";	printArray(firstInA, lastInA);
+			++a;
+	}
+	cout<<a<<endl;
+	return tmp;
 
 }
 
