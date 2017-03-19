@@ -262,7 +262,7 @@ int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, c
 			// cout<<"print: ";	printArray(firstInA, lastInA);
 			++a;
 	}
-	cout<<a<<endl;
+	// cout<<a<<endl;
 	return tmp;
 
 }
