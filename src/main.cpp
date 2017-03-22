@@ -158,7 +158,7 @@ int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	while(lastInB>=firstInB){
 		int a=*lastInA;
 		--lastInA;	
-		if(a<*lastInB){
+		if(a+*lastInResult<*lastInB){
 			a+=10;
 			*(lastInResult+1)=-1;
 		}else 
@@ -262,7 +262,7 @@ int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, c
 			// cout<<"print: ";	printArray(firstInA, lastInA);
 			++a;
 	}
-	// cout<<a<<endl;
+	cout<<a<<endl;
 	return tmp;
 
 }
