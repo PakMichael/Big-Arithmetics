@@ -1,3 +1,3 @@
 hellomake:
-\tmain.cpp
-\tgcc -o hellomake main.cpp -I.
+[tab]main.cpp
+[tab]gcc -o hellomake main.cpp -I.
