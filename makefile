@@ -1,3 +1,3 @@
 hellomake:
-[tab]main.cpp
-[tab]gcc -o hellomake main.cpp -I.
+ - main.cpp
+ - gcc -o hellomake main.cpp -I.
