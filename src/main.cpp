@@ -10,13 +10,12 @@ using namespace std;
 *
 */
 const int MAX_ARRAY_SIZE=256;
-const unsigned MAX_INT_SIZE=-1;  
-char MAX_INT_STRING[]="4294967295"; //Should be const??
 
 //new
 int* toIntArray(char* firstInA, char* lastInA, int* firstInB);
 void printArray(const int* firstInResult, const int* lastInResult);
 int* normalizeAddition(int* firstInResult, int* lastInResult);
+int* multiply(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* add(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* divide(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
@@ -55,6 +54,11 @@ int main(){
 			break;
 		case '/':
 			lastInResult=bigDivision(a, lastInA, b, lastInB, result);
+			break;
+		case '*':
+			*result=0;
+			lastInResult=multiply(a, lastInA, b, lastInB, result);	
+			lastInResult=normalizeAddition(result, lastInResult); //should be depricated? 
 			break;
 	}
 	
@@ -194,9 +198,17 @@ int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, cons
 
 
 int* divide(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
+	const int aLength=lastInA-firstInA;
+	const int bLength=lastInB-firstInB;
+	
+	int* firstInResult=lastInResult;
+	int result[MAX_ARRAY_SIZE];
+	int* resultPtr=result;
+	
+	// resultPtr=bigDivision(firstInA, firstInA[bLength], firstInB, lastInB, resultPtr); 
+	// subtract(firstInA,firstInA[bLength],firstInResult, lastInResult, ...);
  
-	return bigDivision(firstInA, lastInA, firstInB, lastInB, lastInResult);
- 
+	return NULL; 
 	
 }
 
@@ -228,45 +240,106 @@ bool lessThan(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	// cout<<"<-lse"<<endl;
 	if(lastInA-firstInA>lastInB-firstInB)return false;
 	if(lastInA-firstInA<lastInB-firstInB)return true;
-	while(lastInA>=firstInA){
+	while(firstInA<=lastInA){
 		int a=*firstInA;
 		int b=*firstInB;
-		// cout<<"a="<<a<<"  b="<<b<<endl;
-		if(a>9)a-='0';
-		if(b>9)b-='0';
 		if(a>b)return false;
 		if(a<b)return true;
-		--lastInA;
-		--lastInB;
+		++firstInA;
+		++firstInB;
 	}
 	
 	return false;
 }
 
+// int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
+	// const int aLength=lastInA-firstInA;
+	// const int bLength=lastInB-firstInB;
+	// int* firstInResult=lastInResult;
+	
+	// int tempResult[MAX_ARRAY_SIZE];
+	// int* tmp=lastInResult;
+	// int a=0;
+	// while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
+			// lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
+			// tmp=lastInResult;
+			// lastInResult=copyArray(firstInResult, lastInResult, tempResult); //here on out lastInResult points to tempRes
+			// lastInA=reverseArray(tempResult, lastInResult);
+			// firstInA=tempResult;
+			// lastInResult=firstInResult; //reset pointer
+			// ++a;
+	// }
+	// return tmp;
+
+// }
 int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
 	const int aLength=lastInA-firstInA;
 	const int bLength=lastInB-firstInB;
 	int* firstInResult=lastInResult;
 	
-	int tempResult[MAX_ARRAY_SIZE];
-	int* tmp;
-	int a=0;
-	while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
-			// cout<<"-----------"<<endl;
-			lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
-			tmp=lastInResult;
-			lastInResult=copyArray(firstInResult, lastInResult, tempResult);
-			lastInA=reverseArray(tempResult, lastInResult);
-			firstInA=tempResult;
-			lastInResult=firstInResult;
-			// cout<<"print: ";	printArray(firstInA, lastInA);
-			++a;
+	const int* tmpFirstInA=firstInA;
+	const int* tmpLastInA=lastInA+bLength; // A>=B !!!
+	int finalRes[MAX_ARRAY_SIZE];
+	int* finalResPtr=finalRes;
+	
+	while(){
+		int tempResult[MAX_ARRAY_SIZE];
+		int* tmp=lastInResult;
+		int a=0;
+		cout<<"1: "<<endl;
+		while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
+				lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
+				tmp=lastInResult;
+				lastInResult=copyArray(firstInResult, lastInResult, tempResult); //here on out lastInResult points to tempRes
+				lastInA=reverseArray(tempResult, lastInResult);
+				firstInA=tempResult;
+				lastInResult=firstInResult; //reset pointer
+				++a;
+		}
+		*finalResPtr=a;
+		++finalResPtr;
+		cout<<"2: "<<endl;
+		tmp=reverseArray(firstInResult,tmp);
+		while(tmp-firstInResult<=bLength){
+			++tmpLastInA;
+			++tmp;
+			*tmp=*tmpLastInA;
+		}
+		cout<<"3: "<<endl;
+		firstInA=firstInResult;
+		lastInA=tmp;
 	}
-	cout<<a<<endl;
-	return tmp;
+	return --finalResPtr;
 
 }
 
+int* multiply(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
+	const int aLength=lastInA-firstInA;
+	const int bLength=lastInB-firstInB;
+	
+	const int* tempLastInA=lastInA;
+	int* tempLastInResult=lastInResult;
+	int* biggestLast=lastInResult-1;
+	
+	while(lastInB>=firstInB){
+		while(lastInA>=firstInA){
+			if(lastInResult>biggestLast){
+				*lastInResult=0;
+			}				
+			*lastInResult+=(*lastInB)*(*lastInA);
+			++lastInResult;
+			--lastInA;
+		}
+		--lastInB;
+		lastInA=tempLastInA;
+		biggestLast=lastInResult-1;
+		if(lastInB>=firstInB)
+			lastInResult=++tempLastInResult;
+
+	}
+	return --lastInResult;
+	
+}
  
 // bool additionOK(){
 	// cout<<"PASSING ADDITION TEST...";
