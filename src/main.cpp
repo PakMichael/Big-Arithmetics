@@ -20,7 +20,7 @@ int* add(const int* firstInA, const int* lastInA, const int* firstInB, const int
 int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* divide(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
-int* copyArray(int* firstInA, int* lastInA, int* lastInB);
+int* copyArray(const int* firstInA, const int* lastInA, int* lastInB);
 //
 char* getOperatorIndex(char* equationString);
 bool isOperator(char characterDec);
@@ -222,7 +222,7 @@ int* reverseArray(int* arrBeg, int* arrEnd){
 	return arrEnd;
 }
 
-int* copyArray(int* firstInA, int* lastInA, int* lastInB){
+int* copyArray(const int* firstInA, const int* lastInA, int* lastInB){
 	while(lastInA-firstInA>=0){
 		// cout<<"copy: "<<(int)*firstInA<<endl;
 		*lastInB=*firstInA;
@@ -275,41 +275,47 @@ bool lessThan(const int* firstInA, const int* lastInA, const int* firstInB, cons
 int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
 	const int aLength=lastInA-firstInA;
 	const int bLength=lastInB-firstInB;
-	int* firstInResult=lastInResult;
 	
-	const int* tmpFirstInA=firstInA;
-	const int* tmpLastInA=lastInA+bLength; // A>=B !!!
+	int* firstInResult=lastInResult;
+	const int* tmpLastInA=firstInA+bLength; // A>=B !!!
+
 	int finalRes[MAX_ARRAY_SIZE];
 	int* finalResPtr=finalRes;
 	
-	while(){
-		int tempResult[MAX_ARRAY_SIZE];
-		int* tmp=lastInResult;
+	int tempResult[MAX_ARRAY_SIZE];
+	int* firstInTemp=tempResult;
+	int* lastInTemp=tempResult;
+	lastInTemp=copyArray(firstInA, tmpLastInA, tempResult);
+	
+	while(tmpLastInA<=lastInA){
+
 		int a=0;
-		cout<<"1: "<<endl;
-		while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
-				lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
-				tmp=lastInResult;
-				lastInResult=copyArray(firstInResult, lastInResult, tempResult); //here on out lastInResult points to tempRes
-				lastInA=reverseArray(tempResult, lastInResult);
-				firstInA=tempResult;
-				lastInResult=firstInResult; //reset pointer
-				++a;
+		while(!lessThan(firstInTemp, lastInTemp, firstInB, lastInB)){
+			lastInResult=subtract(firstInTemp, lastInTemp, firstInB, lastInB, lastInResult);
+			lastInTemp=copyArray(firstInResult, lastInResult, tempResult); 
+			lastInTemp=reverseArray(firstInTemp, lastInTemp);
+			lastInResult=firstInResult; 
+			++a;
 		}
 		*finalResPtr=a;
 		++finalResPtr;
-		cout<<"2: "<<endl;
-		tmp=reverseArray(firstInResult,tmp);
-		while(tmp-firstInResult<=bLength){
-			++tmpLastInA;
-			++tmp;
-			*tmp=*tmpLastInA;
+		if(lessThan(firstInTemp, lastInTemp, firstInB, lastInB)){
+			if(tmpLastInA<lastInA){
+				++tmpLastInA;
+				++lastInTemp;
+				*lastInTemp=*tmpLastInA;
+			}else break;
 		}
-		cout<<"3: "<<endl;
-		firstInA=firstInResult;
-		lastInA=tmp;
 	}
-	return --finalResPtr;
+	--finalResPtr;
+	finalResPtr=reverseArray(finalRes, finalResPtr);
+	lastInResult=copyArray(finalRes, finalResPtr, lastInResult);
+	while(!*lastInResult){
+		if(lastInResult==firstInResult)
+			break; //remove leading zeros
+		--lastInResult;
+	}
+	return lastInResult;
 
 }
 
@@ -340,87 +346,4 @@ int* multiply(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	return --lastInResult;
 	
 }
- 
-// bool additionOK(){
-	// cout<<"PASSING ADDITION TEST...";
-	
-	// char res[MAX_ARRAY_SIZE];
-	// char eq[][2][50]={
-		// {"1234+9876","11110"},
-		// {"9876+1234", "11110"},
-		// {"12345+9876","22221"},
-		// {"98765+1234", "99999"}
-	// };
-	// for(int i=0;i<4;++i){
-		// char* operatorPtr=getOperatorIndex(eq[i][0]);
-		// char* pointerToLast=res;
-		// char* endPtr=(operatorPtr+1)+strlen(operatorPtr+1);  
-		// pointerToLast=add(eq[i][0], operatorPtr-1, operatorPtr+1, endPtr-1, pointerToLast); 
-		// pointerToLast=normalizeAddition(res, pointerToLast); //outdated?
-		// int index=0;
-		// while(pointerToLast>res){
-			// if(*pointerToLast!=eq[i][1][index]-48){
-				// cout<<endl;
-				// cout<<"--------Addition-Test-Fail-------------------"<<endl;
-				// cout<<"Predefined expr nr."<<i<<"->"<<eq[i][1]<<endl;
-				// cout<<"Result for ["<<i<<"]->";
-				// printArray(res,pointerToLast);
-				// cout<<endl;
-			// cout<<"At pointerToLast="<<(int)*pointerToLast<<", eq["<<i<<"][1]["<<index<<"]="<<(int)eq[i][1][index]<<endl;
-				// cout<<"---------------------------------------------"<<endl;
-				// return false;
-				// }
-			// --pointerToLast;
-			// ++index;
-		// }
-	// }
-		// cout<<"OK"<<endl;
-	// return true;
-	
-// }
-// bool subtractionOK(){
-	// cout<<"PASSING SUBTRATCION TEST...";
-	
-	// char res[MAX_ARRAY_SIZE];
-	 // char eq[][2][50]={
-		// {"1234-9876","-8642"},
-		// {"9876-1234", "8642"},
-		// {"12345-9876","2469"},
-		// {"98765-1234", "97531"},
-		// {"10000-10000","0"},
-		// {"10000-9990","10"}
-	// };
-	// for(int i=0;i<6;++i){
-		// char* operatorPtr=getOperatorIndex(eq[i][0]);
-		// char* pointerToLast=res;
-		// char* endPtr=(operatorPtr+1)+strlen(operatorPtr+1);  
-		
-		// pointerToLast=subtract(eq[i][0], operatorPtr-1, operatorPtr+1, endPtr-1, pointerToLast); 
-		// int index=0;
-		// while(pointerToLast>res){
-		// if(eq[i][1][index]=='-'){
-			// *pointerToLast*=-1;
-			// ++index;
-			// continue;
-			// }
-			// if(*pointerToLast!=eq[i][1][index]-48){
-				// cout<<endl;
-				// cout<<"--------Subtraction-Test-Fail----------------"<<endl;
-				// cout<<"Predefined expr nr."<<i<<"->"<<eq[i][1]<<endl;
-				// cout<<"Result for ["<<i<<"]->";
-				// printArray(res,pointerToLast);
-				// cout<<endl;
-			// cout<<"At pointerToLast="<<(int)*pointerToLast<<", eq["<<i<<"][1]["<<index<<"]="<<(int)eq[i][1][index]<<endl;
-				// cout<<"---------------------------------------------"<<endl;
-				// return false;
-				// }
-			// --pointerToLast;
-			// ++index;
-		// }
-	// }
-		// cout<<"OK"<<endl;
-	// return true;
-	
-// }
-
 
