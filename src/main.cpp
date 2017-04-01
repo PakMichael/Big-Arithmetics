@@ -236,26 +236,7 @@ bool lessThan(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	return false;
 }
 
-// int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
-	// const int aLength=lastInA-firstInA;
-	// const int bLength=lastInB-firstInB;
-	// int* firstInResult=lastInResult;
-	
-	// int tempResult[MAX_ARRAY_SIZE];
-	// int* tmp=lastInResult;
-	// int a=0;
-	// while(!lessThan(firstInA, lastInA, firstInB, lastInB)){
-			// lastInResult=subtract(firstInA, lastInA, firstInB, lastInB, lastInResult);
-			// tmp=lastInResult;
-			// lastInResult=copyArray(firstInResult, lastInResult, tempResult); //here on out lastInResult points to tempRes
-			// lastInA=reverseArray(tempResult, lastInResult);
-			// firstInA=tempResult;
-			// lastInResult=firstInResult; //reset pointer
-			// ++a;
-	// }
-	// return tmp;
 
-// }
 int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
 	const int aLength=lastInA-firstInA;
 	const int bLength=lastInB-firstInB;
