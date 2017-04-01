@@ -5,7 +5,7 @@ using namespace std;
 
 /*
 * A[] and B[] should be const and identically arranged to their original values in equationArray
-* All function should return pointers to last element in pointee array, not one past(!)
+* All functions should return pointers to last element in pointee array, not one past(!)
 * Instead of in-function normalization, use after-normalization where possible
 *
 */
@@ -18,7 +18,6 @@ int* normalizeAddition(int* firstInResult, int* lastInResult);
 int* multiply(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* add(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
-int* divide(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* bigDivision(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult);
 int* copyArray(const int* firstInA, const int* lastInA, int* lastInB);
 //
@@ -196,22 +195,7 @@ int* subtract(const int* firstInA, const int* lastInA, const int* firstInB, cons
 	return lastInResult;
 }
 
-
-int* divide(const int* firstInA, const int* lastInA, const int* firstInB, const int* lastInB, int* lastInResult){
-	const int aLength=lastInA-firstInA;
-	const int bLength=lastInB-firstInB;
-	
-	int* firstInResult=lastInResult;
-	int result[MAX_ARRAY_SIZE];
-	int* resultPtr=result;
-	
-	// resultPtr=bigDivision(firstInA, firstInA[bLength], firstInB, lastInB, resultPtr); 
-	// subtract(firstInA,firstInA[bLength],firstInResult, lastInResult, ...);
  
-	return NULL; 
-	
-}
-
 int* reverseArray(int* arrBeg, int* arrEnd){
 	int length=arrEnd-arrBeg+1;
 	for(int a=0; a<length/2; a++){
